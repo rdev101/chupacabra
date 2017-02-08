@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <title> Demo Content Simple </title>
+    <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+ <script src="public/js/controller/root.js"> </script>
+  </head>
+  <body>
+  <div class="container">
+  <div class="jumbotron">
+   <h1>AWS Demo</h1>
+   <p>API centric application using serverless architecture</p>
+
+  <p>Using Front end hosted in CloudFront serving data static pages from s3</p>
+  <p>API gateway to handle api calls.</p>
+  <p>Lambdas to perform the logic</p>
+  <p>RDS postgres database for storage</p>
+  <p>Cognito to handle authentication</p>
+  </div>
+  <div ng-app="root" ng-controller="ctrl1">
+    <table class="table table-striped">
+   <thead>
+     <tr>
+       <th>Firstname</th>
+       <th>Lastname</th>
+       <th>Street address</th>
+       <th>City</th>
+       <th>Postal code</th>
+     </tr>
+   </thead>
+   <tbody id="data_table">
+   </tbody>
+ </table>
+ </div>
+ </div>
+ <script>
+ $.get( "https://ccksjpcd8l.execute-api.us-west-2.amazonaws.com/v2/clients", function( data ) {
+  //console.log(JSON.stringify(data));
+  var htmlData = '';
+  for(var i = 0; i < data.data.length; i++){
+    //console.log(JSON.stringify(data.data[i]));
+    htmlData += '<tr>' +
+    '<td>' + data.data[i].first_name + '</td>' +
+      '<td>' + data.data[i].last_name + '</td>' +
+        '<td>' + data.data[i].street_address + '</td>' +
+          '<td>' + data.data[i].city + '</td>' +
+            '<td>' + data.data[i].postal_code + '</td>' +
+            '</tr>'
+    $("#data_table").append(htmlData);
+  }
+
+});
+ </script>
+  </body>
+</html>
