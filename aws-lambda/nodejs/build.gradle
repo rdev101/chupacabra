@@ -1,0 +1,40 @@
+
+apply plugin: 'java'
+defaultTasks 'clean', 'zip'
+
+
+// Get the path for the locally installed binaries
+task npmBin << {
+    new ByteArrayOutputStream().withStream { os ->
+        def result = exec {
+            executable = 'npm'
+            args = ['bin']
+            standardOutput = os
+        }
+        ext.binPath = os.toString().trim() + "/"
+    }
+}
+
+
+// Install packages from package.json
+task npm(type: Exec) {
+    description = "Grab NodeJS dependencies (from package.json)"
+    commandLine = ["npm", "install"]
+    inputs.file "package.json"
+    outputs.dir "node_modules"
+
+    tasks.npmBin.execute()
+
+}
+
+
+task zip(type :Zip, dependsOn: npm) {
+  from ('./')
+  include 'lib/', 'node_modules/'
+  archiveName 'api-lambda.zip'
+  destinationDir file('build')
+}
+
+wrapper {
+	gradleVersion '3.1'
+}
